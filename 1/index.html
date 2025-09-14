@@ -15,11 +15,43 @@
 <body>
     <h1>Project 1</h1>
     <h2>Images of the Russian Empire</h2>
+    <div></div>
 
-    This project 
+    This project involves implementing a python program which colorizes an image given a three-channel image. <br>
 
+    <br>
+    <br>
+
+    Before diving into the colorizing implementation, let's talk about setup and preprocessing. All of my setup <br>
+    from splitting the channels to image IO comes from the CS180 starter code. For preprocessing, and to make the <br>
+    process somewhat easier, I decided to change the starter code in three major ways: one, basic logic to make photo <br>
+    selection easier on myself; two, a function that crops a hard margin from each image depending on the type to save <br>
+    on precious compute time; and three, some code to normalize the brightness values of each image to make the <br>
+    displacement search easier (although I didn't notice a difference). So with that out of the way, onto the <br>
+    colorizing!
+    <br>
     <div></div>
     <h3>Single Scale Implementation</h3>
+
+    For my single scale implementation, I decided to implement Normalized Cross Correlation (NCC) as a metric to compute <br>
+    the best displacement between two color channel images. Before performing NCC I crop the images so that the function only <br>
+    considers the centers of the images, as the outer edges are more prone to artifacts and aberrations. I then defined a window <br>
+    size to search over for the displacement, which in my case was a 40x40px box by defualt. Once that is done, I used nested for <br>
+    loops to iterate over the entire window, shift the first image to some displacement, and thencalculate the NCC of the two images <br>
+    for that displacement. I then compare the ncc score with the previous best score, and repeat for the next displacement. Once we <br>
+    find the most optimal displacement, I use np.roll to translate the fisrt image onto the second using the displacement and return <br>
+    the transformed image. This is done once each for the red and green channels, then dstacked to get the final colorized image.<br>
+
+    The biggest problem with this method is that it's unfeasible for very large images like the .tif files due to their size and the time it <br>
+    would take to compute the best displacement. Decreasing the window size would only increase the chances that a best displacement could <br>
+    not be found. Which is why we have the image pyramid version/multiscale version. <br>
+
+    As a side note, for the captions on the pictures, the letter corresponds to the overlaying channel (green or Red) onto the Blue channel. <br>
+    The numbers after are the best displacements calculated with my default window size of 20 (or 40x40 px). All .jpg files have 20px cropped <br>
+    from the border. Larger files (the .tif files) have 300px cropped off.<br>
+
+    HEre's the results of my code on the example .jpg files provided:<br>
+
     <figure>
         <img src="./output/out_cathedral.jpg" width="360">
         <figcaption>Cathedral.jpg - Displacement: G(5,2), R(12,3)</figcaption>
@@ -27,19 +59,116 @@
 
     <figure>
         <img src="./output/out_monastery.jpg" width="360">
-        <figcaption>Cathedral.jpg - Displacement: G(-3,2), R(3,2)</figcaption>
+        <figcaption>Monastery.jpg - Displacement: G(-3,2), R(3,2)</figcaption>
     </figure>
 
     <figure>
         <img src="./output/out_tobolsk.jpg" width="360">
-        <figcaption>Cathedral.jpg - Displacement: G(3,3), R(6,3)</figcaption>
+        <figcaption>Tobolsk.jpg - Displacement: G(3,3), R(6,3)</figcaption>
     </figure>
 
-
+    <div></div>
     <h3> Multiscale Implementation (Image Pyramid)</h3>
-    The multiscale implementation was not that different from the single scale implementation. I opted to
+    The multiscale implementation was not that different from the single scale implementation. I opted to continue using NCC as a metric <br>
+    due to its simplicity, which presented its own challenges (more later). For an image pyramid approach, I just had to encapsulate the <br>
+    previous image alignment function in a recursive function, pyramidalign. This function included a helper function to handle the <br>
+    recursive calls, pyramidscale. Inside this function, I defined a base case for the recursion that performs NCC on the lowest resolution <br>
+    image, given by the highest level in my code. <br>
 
+    The first step the algorithm takes is downscaling, done using library functions. This takes in a constant SCALE that determines the scale <br>
+    of lower level images relative to the original. Once downscaling is performed, I make a recursive call that kicks off the pyramid, downscaling <br>
+    until it reaches the lowest level/lowest resolution image. The window size is also reduced along with the image resolution to allow for faster <br>
+    computing. With that done, the recursive call returns the displacement of the lowest resolution image: the coarse displacement. <br>
 
+    After finding the coarse displacement, I shift the first image onto the second to prepare for correction. Since the coarse displacement is just <br>
+    a scaled version of the lower layer's displacement, it lacks the precision of just doing NCC on the higher resolution image. To correct for this, <br>
+    I perform NCC on the higher resolution image over a much smaller window to compute the fine displacement. Adding the coarse and fine displacements <br>
+    together at each level returns the true best displacement of the image, and afterwards it's just a matter of shifting the first image onto the second.<br>
+
+    Unfortunately, I ran into a few problems with this aproach. Due to the amount of parameters (pyramid levels, scale, window size, etc), I spent <br>
+    quite a while just tweaking them in jopes of getting better results. This also isn't the fastest method, with an average time of about 55 seconds, <br>
+    barely under the threshold. However, it does work accurately for a majority of the provided images, and works much more quickly than performing <br>
+    an exhaustive search over the entire full res image. <br>
+
+    My approach did not work for a few images, namely emir.tif, self_portrait.tif, and melons.tif. Like the project details mentioned, I believe this <br>
+    has to do with the images not having the same brightness values (despite normalization), and the fact that my window size may be too small for my <br>
+    program to work with these images. Testing on the first version of my code with much larger window sizes proved the second point to be true, but <br>
+    the program also took upwards of 4 to 6 minutes to output a single image, so I decided it would be best to trade accuracy for speed. <br>
+
+    Here's the results on the example .tif files provided:<br>
+
+    <figure>
+        <img src="./output/out_church.jpg" width="360">
+        <figcaption>Church.jpg - Displacement: G(25,4), R(58,-4)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_emir.jpg" width="360">
+        <figcaption>Emir.jpg - Displacement: G(49,24), R(45,41)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_harvesters.jpg" width="360">
+        <figcaption>Harvesters.jpg - Displacement: G(59,16), R(124,14)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_icon.jpg" width="360">
+        <figcaption>Icon.jpg - Displacement: G(41,17), R(89,23)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_italil.jpg" width="360">
+        <figcaption>Italil.jpg - Displacement: G(38,21), R(76,35)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_lastochikino.jpg" width="360">
+        <figcaption>Lastochikino.jpg - Displacement: G(-3,-2), R(75,-8)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_lugano.jpg" width="360">
+        <figcaption>Lugano.jpg - Displacement: G(41,-16), R(92,-29)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_melons.jpg" width="360">
+        <figcaption>Melons.jpg - Displacement: G(82,10), R(125,16)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_self_portrait.jpg" width="360">
+        <figcaption>Self_portrait.jpg - Displacement: G(78,29), R(125,37)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_siren.jpg" width="360">
+        <figcaption>Siren.jpg - Displacement: G(49,-6), R(95,-25)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_three_generations.jpg" width="360">
+        <figcaption>Three_generations.jpg - Displacement: G(53,14), R(112,11)</figcaption>
+    </figure>
+
+    <br>
+    Additonally, the results on other photographs in the Prokudin-Gorskii Collection, selected based on subject for variability: 
+
+    <figure>
+        <img src="./output/out_kapri.jpg" width="360">
+        <figcaption>Kapri.jpg - Displacement: G(49,-6), R(78,-25)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_fortress.jpg" width="360">
+        <figcaption>Fortress.jpg - Displacement: G(35,3), R(98,4)</figcaption>
+    </figure>
+
+    <figure>
+        <img src="./output/out_yurt.jpg" width="360">
+        <figcaption>Yurt.jpg - Displacement: G(), R()</figcaption>
+    </figure>
 
 </body>
 
