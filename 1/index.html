@@ -90,14 +90,15 @@
     together at each level returns the true best displacement of the image, and afterwards it's just a matter of shifting the first image onto the second.<br></p>
 
     <p>Unfortunately, I ran into a few problems with this aproach. Due to the amount of parameters (pyramid levels, scale, window size, etc), I spent <br>
-    quite a while just tweaking them in jopes of getting better results. This also isn't the fastest method, with an average time of about 55 seconds, <br>
-    barely under the threshold. However, it does work accurately for a majority of the provided images, and works much more quickly than performing <br></p>
-    an exhaustive search over the entire full res image. <br>
+    quite a while just tweaking them in jopes of getting better results. This also isn't the fastest method, with an average time of about 55 to 60 seconds, <br>
+    barely under the threshold. However, it does work accurately for a majority of the provided images, and works much more quickly than performing <br>
+    an exhaustive search over the entire full res image. <br></p>
 
     <p>My approach did not work for a few images, namely emir.tif, self_portrait.tif, and melons.tif. Like the project details mentioned, I believe this <br>
     has to do with the images not having the same brightness values (despite normalization), and the fact that my window size may be too small for my <br>
     program to work with these images. Testing on the first version of my code with much larger window sizes proved the second point to be true, but <br>
-    the program also took upwards of 4 to 6 minutes to output a single image, so I decided it would be best to trade accuracy for speed. <br></p>
+    the program also took upwards of 4 to 6 minutes to output a single image, so I decided it would be best to trade accuracy for speed. I did notice<br>
+    that the images only seem ot be off by their y displacement, and that the x displacement looks relatively correct<br></p>
 
     Here's the results on the example .tif files provided:<br>
 
@@ -171,7 +172,7 @@
 
     <figure>
         <img src="./output/out_yurt.jpg" width="360">
-        <figcaption>Yurt.jpg - Displacement: G(), R()</figcaption>
+        <figcaption>Yurt.jpg - Displacement: G(57,31), R(125,48)</figcaption>
     </figure>
 
 </body>
