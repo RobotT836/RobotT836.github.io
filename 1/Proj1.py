@@ -163,7 +163,7 @@ if __name__ == "__main__":
     plt.show()
 
     if input("Save image? [Y/N]: ").lower() == 'y':
-        fname = f'./output/out_{os.path.basename(imname)}.jpg'
+        fname = f'./output/out_{os.path.basename(imname)[:len(os.path.basename(imname) - 3)]}.jpg'
         im_out = (np.clip(im_out, 0, 1) * 255).astype(np.uint8)
         skio.imsave(fname, im_out)
 
