@@ -21,7 +21,7 @@
 
     <br>
     <br>
-
+    <p>
     Before diving into the colorizing implementation, let's talk about setup and preprocessing. All of my setup <br>
     from splitting the channels to image IO comes from the CS180 starter code. For preprocessing, and to make the <br>
     process somewhat easier, I decided to change the starter code in three major ways: one, basic logic to make photo <br>
@@ -29,10 +29,13 @@
     on precious compute time; and three, some code to normalize the brightness values of each image to make the <br>
     displacement search easier (although I didn't notice a difference). So with that out of the way, onto the <br>
     colorizing!
+    </p>
+
     <br>
     <div></div>
     <h3>Single Scale Implementation</h3>
 
+    <p>
     For my single scale implementation, I decided to implement Normalized Cross Correlation (NCC) as a metric to compute <br>
     the best displacement between two color channel images. Before performing NCC I crop the images so that the function only <br>
     considers the centers of the images, as the outer edges are more prone to artifacts and aberrations. I then defined a window <br>
@@ -41,59 +44,60 @@
     for that displacement. I then compare the ncc score with the previous best score, and repeat for the next displacement. Once we <br>
     find the most optimal displacement, I use np.roll to translate the fisrt image onto the second using the displacement and return <br>
     the transformed image. This is done once each for the red and green channels, then dstacked to get the final colorized image.<br>
-
+    </p>
+    <p>
     The biggest problem with this method is that it's unfeasible for very large images like the .tif files due to their size and the time it <br>
     would take to compute the best displacement. Decreasing the window size would only increase the chances that a best displacement could <br>
-    not be found. Which is why we have the image pyramid version/multiscale version. <br>
+    not be found. Which is why we have the image pyramid version/multiscale version. <br></p>
 
-    As a side note, for the captions on the pictures, the letter corresponds to the overlaying channel (green or Red) onto the Blue channel. <br>
+    <p>As a side note, for the captions on the pictures, the letter corresponds to the overlaying channel (green or Red) onto the Blue channel. <br>
     The numbers after are the best displacements calculated with my default window size of 20 (or 40x40 px). All .jpg files have 20px cropped <br>
-    from the border. Larger files (the .tif files) have 300px cropped off.<br>
+    from the border. Larger files (the .tif files) have 300px cropped off.<br></p>
 
-    HEre's the results of my code on the example .jpg files provided:<br>
+    <p>Here's the results of my code on the example .jpg files provided:<br></p>
 
     <figure>
-        <img src="./output/out_cathedral.jpg" width="360">
+        <img src="./output/out_cathedral.jpg" width="480">
         <figcaption>Cathedral.jpg - Displacement: G(5,2), R(12,3)</figcaption>
     </figure>
 
     <figure>
-        <img src="./output/out_monastery.jpg" width="360">
+        <img src="./output/out_monastery.jpg" width="480">
         <figcaption>Monastery.jpg - Displacement: G(-3,2), R(3,2)</figcaption>
     </figure>
 
     <figure>
-        <img src="./output/out_tobolsk.jpg" width="360">
+        <img src="./output/out_tobolsk.jpg" width="480">
         <figcaption>Tobolsk.jpg - Displacement: G(3,3), R(6,3)</figcaption>
     </figure>
 
     <div></div>
     <h3> Multiscale Implementation (Image Pyramid)</h3>
-    The multiscale implementation was not that different from the single scale implementation. I opted to continue using NCC as a metric <br>
+    <p>The multiscale implementation was not that different from the single scale implementation. I opted to continue using NCC as a metric <br>
     due to its simplicity, which presented its own challenges (more later). For an image pyramid approach, I just had to encapsulate the <br>
     previous image alignment function in a recursive function, pyramidalign. This function included a helper function to handle the <br>
     recursive calls, pyramidscale. Inside this function, I defined a base case for the recursion that performs NCC on the lowest resolution <br>
-    image, given by the highest level in my code. <br>
+    image, given by the highest level in my code. <br></p>
 
-    The first step the algorithm takes is downscaling, done using library functions. This takes in a constant SCALE that determines the scale <br>
+    <p>The first step the algorithm takes is downscaling, done using library functions. This takes in a constant SCALE that determines the scale <br>
     of lower level images relative to the original. Once downscaling is performed, I make a recursive call that kicks off the pyramid, downscaling <br>
     until it reaches the lowest level/lowest resolution image. The window size is also reduced along with the image resolution to allow for faster <br>
-    computing. With that done, the recursive call returns the displacement of the lowest resolution image: the coarse displacement. <br>
+    computing. With that done, the recursive call returns the displacement of the lowest resolution image: the coarse displacement. <br></p>
 
-    After finding the coarse displacement, I shift the first image onto the second to prepare for correction. Since the coarse displacement is just <br>
+    <p>After finding the coarse displacement, I shift the first image onto the second to prepare for correction. Since the coarse displacement is just <br>
     a scaled version of the lower layer's displacement, it lacks the precision of just doing NCC on the higher resolution image. To correct for this, <br>
     I perform NCC on the higher resolution image over a much smaller window to compute the fine displacement. Adding the coarse and fine displacements <br>
-    together at each level returns the true best displacement of the image, and afterwards it's just a matter of shifting the first image onto the second.<br>
+    together at each level returns the true best displacement of the image, and afterwards it's just a matter of shifting the first image onto the second.<br></p>
 
-    Unfortunately, I ran into a few problems with this aproach. Due to the amount of parameters (pyramid levels, scale, window size, etc), I spent <br>
+    <p>Unfortunately, I ran into a few problems with this aproach. Due to the amount of parameters (pyramid levels, scale, window size, etc), I spent <br>
     quite a while just tweaking them in jopes of getting better results. This also isn't the fastest method, with an average time of about 55 seconds, <br>
-    barely under the threshold. However, it does work accurately for a majority of the provided images, and works much more quickly than performing <br>
+    barely under the threshold. However, it does work accurately for a majority of the provided images, and works much more quickly than performing <br></p>
     an exhaustive search over the entire full res image. <br>
 
-    My approach did not work for a few images, namely emir.tif, self_portrait.tif, and melons.tif. Like the project details mentioned, I believe this <br>
+    <p>My approach did not work for a few images, namely emir.tif, self_portrait.tif, and melons.tif. Like the project details mentioned, I believe this <br>
     has to do with the images not having the same brightness values (despite normalization), and the fact that my window size may be too small for my <br>
     program to work with these images. Testing on the first version of my code with much larger window sizes proved the second point to be true, but <br>
-    the program also took upwards of 4 to 6 minutes to output a single image, so I decided it would be best to trade accuracy for speed. <br>
+    the program also took upwards of 4 to 6 minutes to output a single image, so I decided it would be best to trade accuracy for speed. <br></p>
 
     Here's the results on the example .tif files provided:<br>
 
@@ -153,7 +157,7 @@
     </figure>
 
     <br>
-    Additonally, the results on other photographs in the Prokudin-Gorskii Collection, selected based on subject for variability: 
+    <p>Additonally, the results on other photographs in the Prokudin-Gorskii Collection, selected based on subject for variability:<br> </p>
 
     <figure>
         <img src="./output/out_kapri.jpg" width="360">
