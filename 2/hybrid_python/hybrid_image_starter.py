@@ -30,7 +30,8 @@ im2_gray = cv2.imread('./hybrid_python/nutmeg.jpg', cv2.IMREAD_GRAYSCALE)
 # im2 = cv2.imread('./hybrid_python/nutmeg.jpg', cv2.IMREAD_GRAYSCALE)
 
 # Next align images (this code is provided, but may be improved)
-im1_aligned, im2_aligned = align_images(im1, im2)
+#im1_aligned, im2_aligned = align_images(im1, im2)
+im2_aligned, im1_aligned = align_images(im2, im1)
 
 ## You will provide the code below. Sigma1 and sigma2 are arbitrary 
 ## cutoff values for the high and low frequencies
@@ -42,7 +43,7 @@ sigma2 = 3.0
 lowpass = np.outer(cv2.getGaussianKernel(27, sigma1), cv2.getGaussianKernel(27, sigma1).T)
 highpass = np.outer(cv2.getGaussianKernel(27, sigma2), cv2.getGaussianKernel(27, sigma2).T)
 
-gaussian_image, laplacian_image = np.zeros_like(im2), np.zeros_like(im1)
+gaussian_image, laplacian_image = np.zeros_like(im2_aligned), np.zeros_like(im1_aligned)
 
 
 for c in range(3):
@@ -69,16 +70,24 @@ hybrid_gray = np.mean(hybrid, axis=2)
 fig, ax = plt.subplots(2,3, figsize=(8, 12))
 ax[0,0].imshow(im1)
 ax[0,0].set_title("Image 1 (High)")
+ax[0,0].axis('off')
 ax[1,0].imshow(im2)
 ax[1,0].set_title("Image 2 (Low)")
+ax[1,0].axis('off')
 ax[0,1].imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im1_gray)))), cmap='gray')
 ax[0,1].set_title('FT Log Magnitude of Image 1')
+ax[0,1].axis('off')
 ax[1,1].imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im2_gray)))), cmap='gray')
 ax[1,1].set_title('FT Log Magnitude of Image 2')
+ax[1,1].axis('off')
 ax[0,2].imshow(laplacian_image)
 ax[0,2].set_title('Laplacian')
+ax[0,2].axis('off')
 ax[1,2].imshow(gaussian_image)
 ax[1,2].set_title('Gaussian')
+ax[1,2].axis('off')
+plt.tight_layout()
+plt.show()
 
 
 plt.imshow(hybrid)

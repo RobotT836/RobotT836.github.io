@@ -153,8 +153,41 @@ def myconvolve(image, kernel):
 
     </p>
     <figure>
-      <img src="./media/P2.1.png", width="480">
-      <figcaption>Gradient Magnitude</figcaption>
+      <img src="./media/P2.2_ex1.png", width="480">
+      <figcaption>Example 1: Derek and Nutmeg</figcaption>
     </figure>
+    <figure>
+      <img src="./media/P2.2_hybrid1.png", width="480">
+      <figcaption>Resulting Image</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P2.2_ftlog1.png", width="480">
+      <figcaption>FT Log Magnitude</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./media/", width="480">
+      <figcaption>Example 2: Faces</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./media/", width="480">
+      <figcaption>Example 3: Buildings</figcaption>
+    </figure>
+
+
+
+    <h3>Part 2.3</h3>
+    <p>To implement the stacks, I combined their functionality into one function (since you can't compute the Laplacian stack without the lowest
+      frequency image of the Gaussian anyway). The Gaussian stack was made by repeatedly applying the Gaussian to an image without subsampling. Once
+    the Gaussian stack was computed, I subtracted the levels of the Gaussian from the next highest level of the Gaussian stack to compute the high 
+  frequency images for the Laplacian stack. Then I appended the lowest frequency image of the Gaussian stack to the Laplacian stack to ensure no 
+information is lost. The result on the apple and orange looks almost exactly like the results from the paper: </p>
+
+    <figure>
+      <img src="./media/", width="480">
+      <figcaption>Example 3: Buildings</figcaption>
+    </figure>
+
     
 </body>
