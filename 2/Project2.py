@@ -192,110 +192,110 @@ if __name__ == '__main__':
 
     print("\nPart 1.3: Derivative of Gaussian Filter")
 
-    gaussian = np.outer(cv2.getGaussianKernel(9, 2.0), cv2.getGaussianKernel(9, 2.0, ).T)
-    print("Applying Gaussian...")
-    gauss_convolve = convolve2d(im, gaussian, mode='same', boundary='fill', fillvalue=0)
+    # gaussian = np.outer(cv2.getGaussianKernel(9, 2.0), cv2.getGaussianKernel(9, 2.0, ).T)
+    # print("Applying Gaussian...")
+    # gauss_convolve = convolve2d(im, gaussian, mode='same', boundary='fill', fillvalue=0)
 
-    print("Dx...")
-    dx_convolve = convolve2d(gauss_convolve, Dx, mode='same', boundary='fill', fillvalue=0)
-    print("Dy...")
-    dy_convolve = convolve2d(gauss_convolve, Dy, mode='same', boundary='fill', fillvalue=0)
+    # print("Dx...")
+    # dx_convolve = convolve2d(gauss_convolve, Dx, mode='same', boundary='fill', fillvalue=0)
+    # print("Dy...")
+    # dy_convolve = convolve2d(gauss_convolve, Dy, mode='same', boundary='fill', fillvalue=0)
 
-    fig, ax = plt.subplots(2, 1, figsize=(8,8))
-    ax[0].imshow(dx_convolve, cmap='gray')
-    ax[0].set_title('Kernel: Dx')
-    ax[1].imshow(dy_convolve, cmap='gray')
-    ax[1].set_title('Kernel: Dy')
-    plt.tight_layout()
-    plt.show()
+    # fig, ax = plt.subplots(2, 1, figsize=(8,8))
+    # ax[0].imshow(dx_convolve, cmap='gray')
+    # ax[0].set_title('Kernel: Dx')
+    # ax[1].imshow(dy_convolve, cmap='gray')
+    # ax[1].set_title('Kernel: Dy')
+    # plt.tight_layout()
+    # plt.show()
 
-    gradmagnitude = np.sqrt(dx_convolve ** 2 + dy_convolve ** 2)
-    plt.imshow(gradmagnitude, cmap="gray")
-    plt.title("Gradient Magnitude Image")
-    plt.show()
+    # gradmagnitude = np.sqrt(dx_convolve ** 2 + dy_convolve ** 2)
+    # plt.imshow(gradmagnitude, cmap="gray")
+    # plt.title("Gradient Magnitude Image")
+    # plt.show()
 
-    eps = 0.1
-    edgeim = (gradmagnitude > eps).astype(np.float64)
+    # eps = 0.1
+    # edgeim = (gradmagnitude > eps).astype(np.float64)
 
-    plt.imshow(edgeim, cmap="gray")
-    plt.title("Edge Image")
-    plt.show()
+    # plt.imshow(edgeim, cmap="gray")
+    # plt.title("Edge Image")
+    # plt.show()
 
-    print("\nUsing Derivative of Gaussian...")
+    # print("\nUsing Derivative of Gaussian...")
 
-    dogx = convolve2d(gaussian, Dx, mode='same', boundary='fill', fillvalue=0)
-    dogy = convolve2d(gaussian, Dy, mode='same', boundary='fill', fillvalue=0)
+    # dogx = convolve2d(gaussian, Dx, mode='same', boundary='fill', fillvalue=0)
+    # dogy = convolve2d(gaussian, Dy, mode='same', boundary='fill', fillvalue=0)
 
-    print("DoGx...")
-    dx_convolve = convolve2d(im, dogx, mode='same', boundary='fill', fillvalue=0)
-    print("D0Gy...")
-    dy_convolve = convolve2d(im, dogy, mode='same', boundary='fill', fillvalue=0)
+    # print("DoGx...")
+    # dx_convolve = convolve2d(im, dogx, mode='same', boundary='fill', fillvalue=0)
+    # print("D0Gy...")
+    # dy_convolve = convolve2d(im, dogy, mode='same', boundary='fill', fillvalue=0)
 
-    fig, ax = plt.subplots(2, 1, figsize=(8,8))
-    ax[0].imshow(dx_convolve, cmap='gray')
-    ax[0].set_title('Kernel: Dx')
-    ax[1].imshow(dy_convolve, cmap='gray')
-    ax[1].set_title('Kernel: Dy')
-    plt.tight_layout()
-    plt.show()
+    # fig, ax = plt.subplots(2, 1, figsize=(8,8))
+    # ax[0].imshow(dx_convolve, cmap='gray')
+    # ax[0].set_title('Kernel: Dx')
+    # ax[1].imshow(dy_convolve, cmap='gray')
+    # ax[1].set_title('Kernel: Dy')
+    # plt.tight_layout()
+    # plt.show()
 
-    gradmagnitude = np.sqrt(dx_convolve ** 2 + dy_convolve ** 2)
-    plt.imshow(gradmagnitude, cmap="gray")
-    plt.title("Gradient Magnitude Image")
-    plt.show()
+    # gradmagnitude = np.sqrt(dx_convolve ** 2 + dy_convolve ** 2)
+    # plt.imshow(gradmagnitude, cmap="gray")
+    # plt.title("Gradient Magnitude Image")
+    # plt.show()
 
-    eps = 0.1
-    edgeim = (gradmagnitude > eps).astype(np.float64)
+    # eps = 0.1
+    # edgeim = (gradmagnitude > eps).astype(np.float64)
 
-    plt.imshow(edgeim, cmap="gray")
-    plt.title("Edge Image")
-    plt.show()
+    # plt.imshow(edgeim, cmap="gray")
+    # plt.title("Edge Image")
+    # plt.show()
 
 
 
     print("\n\n===== PART 2: FUN WITH FREQUENCIES =====")
 
     print("\nPart 2.1: Image Sharpening")
-    # imname = 'taj.jpg'
-    # im = cv2.imread(imname, cv2.IMREAD_COLOR)
-    # im = sk.img_as_float(im)
+    imname = 'taj.jpg'
+    im = cv2.imread(imname, cv2.IMREAD_COLOR)
+    im = sk.img_as_float(im)
 
-    # im2name = 'Ladoga.jpg'
-    # im2 = cv2.imread(im2name, cv2.IMREAD_COLOR)
-    # im2 = sk.img_as_float(im2)
+    im2name = 'Ladoga.jpg'
+    im2 = cv2.imread(im2name, cv2.IMREAD_COLOR)
+    im2 = sk.img_as_float(im2)
 
 
-    # def sharpen(im):
-    #     sharpened = np.zeros_like(im)
-    #     alpha = 2.0
+    def sharpen(im):
+        sharpened = np.zeros_like(im)
+        alpha = 2.0
 
-    #     # Color channel logic
-    #     for c in range(3):
-    #         gaussian = np.outer(cv2.getGaussianKernel(9, 2.0), cv2.getGaussianKernel(9, 2.0, ).T)
-    #         smoothed = convolve2d(im[:,:,c], gaussian, mode='same', boundary='fill', fillvalue=0)
-    #         details = im[:,:,c] - smoothed
-    #         sharpened[:,:,c] = im[:,:,c] + alpha * details
-    #     return sharpened
+        # Color channel logic
+        for c in range(3):
+            gaussian = np.outer(cv2.getGaussianKernel(9, 2.0), cv2.getGaussianKernel(9, 2.0, ).T)
+            smoothed = convolve2d(im[:,:,c], gaussian, mode='same', boundary='fill', fillvalue=0)
+            details = im[:,:,c] - smoothed
+            sharpened[:,:,c] = im[:,:,c] + alpha * details
+        return sharpened
     
-    # im1_sharp = sharpen(normalize(im))
-    # im2_sharp = sharpen(normalize(im2))
+    im1_sharp = sharpen(normalize(im))
+    im2_sharp = sharpen(normalize(im2))
 
-    # fig, ax = plt.subplots(2,2, figsize=(8,4))
-    # ax[0,0].imshow(im)
-    # ax[0,0].set_title("Original")
-    # ax[0,0].axis('off')
-    # ax[0,1].imshow(im1_sharp)
-    # ax[0,1].set_title(f"Sharpened (alpha = {2.0})")
-    # ax[0,1].axis('off')
+    fig, ax = plt.subplots(2,2, figsize=(8,4))
+    ax[0,0].imshow(im)
+    ax[0,0].set_title("Original")
+    ax[0,0].axis('off')
+    ax[0,1].imshow(im1_sharp)
+    ax[0,1].set_title(f"Sharpened (alpha = {2.0})")
+    ax[0,1].axis('off')
 
-    # ax[1,0].imshow(im2)
-    # ax[1,0].set_title("Original")
-    # ax[1,0].axis('off')
-    # ax[1,1].imshow(im2_sharp)
-    # ax[1,1].set_title(f"Sharpened (alpha = {2.0})")
-    # ax[1,1].axis('off')
-    # plt.tight_layout()
-    # plt.show()
+    ax[1,0].imshow(im2)
+    ax[1,0].set_title("Original")
+    ax[1,0].axis('off')
+    ax[1,1].imshow(im2_sharp)
+    ax[1,1].set_title(f"Sharpened (alpha = {2.0})")
+    ax[1,1].axis('off')
+    plt.tight_layout()
+    plt.show()
 
     print("\nPart 2.2: Hybrid Images (See hybrid_python folder)")
 

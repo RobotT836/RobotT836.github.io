@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <title>Project 1</title>
+    <title>Project 2</title>
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -25,7 +25,7 @@
     <h3>Part 1.1</h3>
     <p>For this part I implemented two types of custom convolution functions: one naive function, and one numpy vectorized 
       function. I then compared the performance of each version with the scipy convolve2d function and found the library function to be vastly
-      more efficient (as expected). Below are sample photos and snippets of the code used:
+      more efficient (as expected). Boundaries are handled using zero padding. Below are sample photos and snippets of the code used:
     </p>
     <h4>Code</h4>
     <p><pre><code>
@@ -87,14 +87,62 @@ def myconvolve(image, kernel):
     return output
     </code></pre></p>
     <h4>Pictures</h4>
-
-
+    <figure>
+      <img src="./media/P1_Opt.png" width="360">
+      <figcaption>Convolved Image using Optimized Implementation</figcaption>
+    </figure>
+    <br>
     <h4>Runtimes</h4>
-    Naive Time: 17.15 seconds
-    Optimized time: 14.37 seconds
-    Library time: 0.11 Seconds
-
+    Naive: 17.15 seconds<br>
+    Optimized: 14.37 seconds<br>
+    Library: 0.11 Seconds<br>
 
     <h3>Part 1.2</h3>
+    <p>For this part, I computed the directional derivatives as usual, then computed the gradient magnitude image by taking the L2 norm.
+      Filtering all pixels below a certain threshold (in my case, 0.1) gave the edge image. This version, without any filters applied, did
+      have a significant amount of noise mostly from the background.
+      As a note for 1.2 and 1.3, I chose to not change edge values to emphasize the changes made by using the DoGs.
+    </p>
+    <figure>
+      <img src="./media/P1.2_derivs.png", width="360">
+      <figcaption>Derivatives</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1.2_gradmag.png", width="360">
+      <figcaption>Gradient Magnitude</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1.2_edge.png", width="360">
+      <figcaption>Edge Image</figcaption>
+    </figure>
+
+    <h3>Part 1.3</h3>
+    <p>
+      Like part 1.3, I performed the same steps as before, except this time before finding the directional derivatives I convoled
+      with the 2D Gaussian to get the Derivative of Gaussian images. The resulting gradient magnitude and edge images looked a lot
+      cleaner.
+    </p>
+    <figure>
+      <img src="./media/P1.3_DoGs.png", width="360">
+      <figcaption>Derivatives</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1.3_gradmag.png", width="360">
+      <figcaption>Gradient Magnitude</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1.3_edge.png", width="360">
+      <figcaption>Edge Image</figcaption>
+    </figure>
+
+
+    <h3>Part 2.1</h3>
+    <p>
+      To sharpen images, I simply filtered out the high frequencies of the image and overlayed that on top of the original to create
+      the effect of "sharper" edges.
+
+      Below are examples of my image sharpening code working on the example image of the Taj Mahal, as well as on an example from the
+      Prokudin-Gorskii Collection from the Library of Congress.
+    </p>
     
 </body>
