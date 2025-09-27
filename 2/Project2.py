@@ -36,7 +36,6 @@ def myconvolve_naive(image, kernel):
 
     for row in range(h_out):
         for col in range(w_out):
-
             outputval = 0
             
             for kernr in range(h_kern):

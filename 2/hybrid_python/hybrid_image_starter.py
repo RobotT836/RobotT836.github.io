@@ -16,14 +16,14 @@ im2_gray = cv2.imread('./hybrid_python/nutmeg.jpg', cv2.IMREAD_GRAYSCALE)
 
 
 #Log Magnitudes
-plt.imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im1_gray)))), cmap='gray')
-plt.title("Log magnitude im1")
-plt.tight_layout()
-plt.show()
-plt.imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im2_gray)))), cmap='gray')
-plt.title("Log magnitude im2")
-plt.tight_layout()
-plt.show()
+# plt.imshow()
+# plt.title("Log magnitude im1")
+# plt.tight_layout()
+# plt.show()
+# plt.imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im2_gray)))), cmap='gray')
+# plt.title("Log magnitude im2")
+# plt.tight_layout()
+# plt.show()
 
 #DEBUG
 # im1 = cv2.imread('./hybrid_python/DerekPicture.jpg', cv2.IMREAD_GRAYSCALE)
@@ -42,17 +42,19 @@ sigma2 = 3.0
 lowpass = np.outer(cv2.getGaussianKernel(27, sigma1), cv2.getGaussianKernel(27, sigma1).T)
 highpass = np.outer(cv2.getGaussianKernel(27, sigma2), cv2.getGaussianKernel(27, sigma2).T)
 
+gaussian_image, laplacian_image = np.zeros_like(im2), np.zeros_like(im1)
+
 
 for c in range(3):
     #Convolve and add
     #Low Frequencies
-    gaussian_image = convolve2d(im2_aligned[:,:,c], lowpass, mode='same', boundary='fill', fillvalue=0)
+    gaussian_image[:, :, c] = convolve2d(im2_aligned[:,:,c], lowpass, mode='same', boundary='fill', fillvalue=0)
     
     #High Frequencies
     lfreq = convolve2d(im1_aligned[:,:,c], highpass, mode='same', boundary='fill', fillvalue=0)
-    laplacian_image = im1_aligned[:,:,c] - lfreq
+    laplacian_image[:, :, c] = im1_aligned[:,:,c] - lfreq
 
-    hybrid[:,:,c] = gaussian_image + laplacian_image
+    hybrid[:,:,c] = gaussian_image[:, :, c] + laplacian_image[:, :, c]
 
 
 # gaussian_image = convolve2d(im2_aligned, lowpass, mode='same', boundary='fill', fillvalue=0)
@@ -60,9 +62,24 @@ for c in range(3):
 # #High Frequencies
 # lfreq = convolve2d(im1_aligned, highpass, mode='same', boundary='fill', fillvalue=0)
 # laplacian_image = im1_aligned - lfreq
-
 # hybrid = gaussian_image + laplacian_image
+
 hybrid_gray = np.mean(hybrid, axis=2)
+
+fig, ax = plt.subplots(2,3, figsize=(8, 12))
+ax[0,0].imshow(im1)
+ax[0,0].set_title("Image 1 (High)")
+ax[1,0].imshow(im2)
+ax[1,0].set_title("Image 2 (Low)")
+ax[0,1].imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im1_gray)))), cmap='gray')
+ax[0,1].set_title('FT Log Magnitude of Image 1')
+ax[1,1].imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im2_gray)))), cmap='gray')
+ax[1,1].set_title('FT Log Magnitude of Image 2')
+ax[0,2].imshow(laplacian_image)
+ax[0,2].set_title('Laplacian')
+ax[1,2].imshow(gaussian_image)
+ax[1,2].set_title('Gaussian')
+
 
 plt.imshow(hybrid)
 plt.title(f"Hybrid image")
