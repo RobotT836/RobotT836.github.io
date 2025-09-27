@@ -407,48 +407,51 @@ if __name__ == '__main__':
             mask[:int(im.shape[0]*0.5), :] = 1.0
         elif t == 3:
             #Ellipsoidal mask
-            h, k = (mask.shape[0]//2, mask.shape[1]//2)
-            a, b = (40, 20)
-
-           # mask =  <= 1.0
-            
+            k, h = (mask.shape[0]//2, mask.shape[1]//2)
+            a, b = 120, 80
+            x, y = np.ogrid[:mask.shape[0], :mask.shape[1]]
+            ellipse = ((x - h)**2 / a**2) + ((y - k**2) / b**2) <= 1.0
+            mask[ellipse] = 1.0
         elif t == 4:
-            pass
-            #Striped mask
+            #Vert Striped mask
             # stripe_mask = np.zeros(im4.shape[:2])
-            # 
+            width = 30
+            h, w = mask.shape
+            for c in range(0, w, width*2):
+                mask[:, c:min(c + width, w)] = 1.0
         return mask
     
 
     # # Orapple
-    # print('Example 1: Orapple')
-    # im1name = 'apple.jpeg'
-    # im1 = cv2.imread(im1name, cv2.IMREAD_COLOR)
-    # im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
-    # im1 = sk.img_as_float(im1)
+    print('Example 1: Orapple')
+    im1name = 'apple.jpeg'
+    im1 = cv2.imread(im1name, cv2.IMREAD_COLOR)
+    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
+    im1 = sk.img_as_float(im1)
 
-    # im2name = 'orange.jpeg'
-    # im2 = cv2.imread(im2name, cv2.IMREAD_COLOR)
-    # im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
-    # im2 = sk.img_as_float(im2)
+    im2name = 'orange.jpeg'
+    im2 = cv2.imread(im2name, cv2.IMREAD_COLOR)
+    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+    im2 = sk.img_as_float(im2)
 
-    # vmask = mask(1, im1)
-    # orapple = multiresblend(im1, im2, vmask, levels=5)
-    # fig, ax = plt.subplots(1, 4, figsize=(16,4))
-    # ax[0].imshow(im1)
-    # ax[0].set_title('Apple')
-    # ax[1].imshow(im2)
-    # ax[1].set_title('Orange')
-    # ax[2].imshow(vmask, cmap='gray')
-    # ax[2].set_title('Mask')
-    # ax[3].imshow(orapple)
-    # ax[3].set_title('Orapple')
-    # for a in ax:
-    #     a.axis('off')
+    vmask = mask(1, im1)
+    orapple = multiresblend(im1, im2, vmask, levels=5)
+    fig, ax = plt.subplots(1, 4, figsize=(16,4))
+    ax[0].imshow(im1)
+    ax[0].set_title('Apple')
+    ax[1].imshow(im2)
+    ax[1].set_title('Orange')
+    ax[2].imshow(vmask, cmap='gray')
+    ax[2].set_title('Mask')
+    ax[3].imshow(orapple)
+    ax[3].set_title('Orapple')
+    for a in ax:
+        a.axis('off')
 
-    # plt.tight_layout()
-    # plt.show()
+    plt.tight_layout()
+    plt.show()
 
-    # print('Example 3: Horror Hand')
+    print('Example 2: Horror Hand')
 
-    # print('Example 4: Stripes')
+    
+    print('Example 3: Stripes')
