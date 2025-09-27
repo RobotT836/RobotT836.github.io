@@ -23,12 +23,13 @@
     <h2>Fun with Filters and Frequencies</h2>
     <div></div>
     <h3>Part 1.1</h3>
-    <p style="margin:20px">For this part I implemented two types of custom convolution functions: one naive function, and one numpy vectorized 
+    <p>For this part I implemented two types of custom convolution functions: one naive function, and one numpy vectorized 
       function. I then compared the performance of each version with the scipy convolve2d function and found the library function to be vastly
       more efficient (as expected). Below are sample photos and snippets of the code used:
     </p>
-    <pre><code>
-      #Naive Convolution
+    <h4>Code</h4>
+    <p><pre><code>
+#Naive Convolution
 def myconvolve_naive(image, kernel):
     h_kern, w_kern = kernel.shape
     kernel = np.flip(kernel)
@@ -84,12 +85,16 @@ def myconvolve(image, kernel):
             output[r, c] = np.sum(padded[r:rend, c:cend] * kernel)
 
     return output
+    </code></pre></p>
+    <h4>Pictures</h4>
 
 
-
-    </code></pre>
+    <h4>Runtimes</h4>
     Naive Time: 17.15 seconds
     Optimized time: 14.37 seconds
     Library time: 0.11 Seconds
+
+
+    <h3>Part 1.2</h3>
     
 </body>
