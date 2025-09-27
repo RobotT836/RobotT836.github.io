@@ -60,7 +60,7 @@ def myconvolve_naive(image, kernel):
             output[row, col] = outputval
     return output
 
-#Optimized convoluton (Inspired by CS 189 HW6.2)
+#Optimized convoluton
 def myconvolve(image, kernel):
     h_kern, w_kern = kernel.shape
     kernel = np.flip(kernel)
@@ -185,9 +185,36 @@ def myconvolve(image, kernel):
 information is lost. The result on the apple and orange looks almost exactly like the results from the paper: </p>
 
     <figure>
-      <img src="./media/", width="480">
-      <figcaption>Example 3: Buildings</figcaption>
+      <img src="./media/apple_stacks.png", width="480">
+      <figcaption>Gaussian and Laplacian Stacks: Apple</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/orange_stacks.png", width="480">
+      <figcaption>Gaussian and Laplacian Stacks: Orange</figcaption>
     </figure>
 
+
+
+    <h3>Part 2.4</h3>
+    <p>Finally, multiresolution blending. Using the results from 2.3 I then created a vertical seam mask like the one in the paper and applied the Gaussian
+      filter to it. Using the formula from lecture, I combined the laplacians of both source images with the Gaussian of the mask to create the blended image.
+    </p>
+    <figure>
+      <img src="./media/the_orapple.png", width="480">
+      <figcaption>The Orapple</figcaption>
+    </figure>
+    <p>And a few examples of my own using different masks:</p>
+    <figure>
+      <img src="./media/", width="480">
+      <figcaption>The Orapple</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/", width="480">
+      <figcaption>The Orapple</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/", width="480">
+      <figcaption>The Orapple</figcaption>
+    </figure>
     
 </body>
