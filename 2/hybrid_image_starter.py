@@ -6,13 +6,21 @@ import cv2
 
 # First load images
 
-# high sf
-im1 = plt.imread('./hybrid_python/DerekPicture.jpg')/255.
-im1_gray = cv2.imread('./hybrid_python/DerekPicture.jpg', cv2.IMREAD_GRAYSCALE)
+# # high sf
+# im1 = plt.imread('./DerekPicture.jpg')/255.
+# im1_gray = cv2.imread('./DerekPicture.jpg', cv2.IMREAD_GRAYSCALE)
 
+# # low sf
+# im2 = plt.imread('./nutmeg.jpg')/255
+# im2_gray = cv2.imread('./nutmeg.jpg', cv2.IMREAD_GRAYSCALE)
+
+# high sf
+im1 = cv2.imread('./happy.jpg', cv2.IMREAD_COLOR_RGB)
 # low sf
-im2 = plt.imread('./hybrid_python/nutmeg.jpg')/255
-im2_gray = cv2.imread('./hybrid_python/nutmeg.jpg', cv2.IMREAD_GRAYSCALE)
+im2 = cv2.imread('./angry.jpg', cv2.IMREAD_COLOR_RGB)
+
+im1 = im1.astype(np.float64) / 255
+im2 = im2.astype(np.float64) / 255
 
 
 #Log Magnitudes
@@ -65,29 +73,29 @@ for c in range(3):
 # laplacian_image = im1_aligned - lfreq
 # hybrid = gaussian_image + laplacian_image
 
-hybrid_gray = np.mean(hybrid, axis=2)
+#hybrid_gray = np.mean(hybrid, axis=2)
 
-fig, ax = plt.subplots(2,3, figsize=(8, 12))
-ax[0,0].imshow(im1)
-ax[0,0].set_title("Image 1 (High)")
-ax[0,0].axis('off')
-ax[1,0].imshow(im2)
-ax[1,0].set_title("Image 2 (Low)")
-ax[1,0].axis('off')
-ax[0,1].imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im1_gray)))), cmap='gray')
-ax[0,1].set_title('FT Log Magnitude of Image 1')
-ax[0,1].axis('off')
-ax[1,1].imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im2_gray)))), cmap='gray')
-ax[1,1].set_title('FT Log Magnitude of Image 2')
-ax[1,1].axis('off')
-ax[0,2].imshow(laplacian_image)
-ax[0,2].set_title('Laplacian')
-ax[0,2].axis('off')
-ax[1,2].imshow(gaussian_image)
-ax[1,2].set_title('Gaussian')
-ax[1,2].axis('off')
-plt.tight_layout()
-plt.show()
+# fig, ax = plt.subplots(2,3, figsize=(8, 12))
+# ax[0,0].imshow(im1)
+# ax[0,0].set_title("Image 1 (High)")
+# ax[0,0].axis('off')
+# ax[1,0].imshow(im2)
+# ax[1,0].set_title("Image 2 (Low)")
+# ax[1,0].axis('off')
+# ax[0,1].imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im1_gray)))), cmap='gray')
+# ax[0,1].set_title('FT Log Magnitude of Image 1')
+# ax[0,1].axis('off')
+# ax[1,1].imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(im2_gray)))), cmap='gray')
+# ax[1,1].set_title('FT Log Magnitude of Image 2')
+# ax[1,1].axis('off')
+# ax[0,2].imshow(laplacian_image)
+# ax[0,2].set_title('Laplacian')
+# ax[0,2].axis('off')
+# ax[1,2].imshow(gaussian_image)
+# ax[1,2].set_title('Gaussian')
+# ax[1,2].axis('off')
+# plt.tight_layout()
+# plt.show()
 
 
 plt.imshow(hybrid)
@@ -95,8 +103,8 @@ plt.title(f"Hybrid image")
 plt.tight_layout()
 plt.show()
 
-plt.imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(hybrid_gray)))), cmap='gray')
-plt.title("Log magnitude hybrid image")
-plt.tight_layout()
-plt.show()
+# plt.imshow(np.log(np.abs(np.fft.fftshift(np.fft.fft2(hybrid_gray)))), cmap='gray')
+# plt.title("Log magnitude hybrid image")
+# plt.tight_layout()
+# plt.show()
 

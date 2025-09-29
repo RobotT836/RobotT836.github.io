@@ -138,19 +138,21 @@ def myconvolve(image, kernel):
 
     <h3>Part 2.1</h3>
     <p>
-      To create hybrid images we 
-
-
+      To sharpen images I followed the steps outlined in class. First, I took the Gaussian of the original image and subtracted from 
+      the original to obtain the high frequency "detail" image. Then I added the details to the original with a small alpha 
+      to obtain the sharpened image.
       Below is an example using the provided image, and a few of my own!
     </p>
     <figure>
       <img src="./media/P2.1.png", width="480">
-      <figcaption>Gradient Magnitude</figcaption>
+      <figcaption>Sharpening Example</figcaption>
     </figure>
 
     <h3>Part 2.2</h3>
     <p>
-
+      To create hybrid images I added the Gaussian of one image and the Laplacian of another (I found the laplacian by performing 
+      similar steps as Part 2.1). Adding the Guassian and Laplacian then creates the hybrid image. Below are examples on the example 
+      image and some of my own examples.
     </p>
     <figure>
       <img src="./media/P2.2_ex1.png", width="480">
@@ -164,15 +166,33 @@ def myconvolve(image, kernel):
       <img src="./media/P2.2_ftlog1.png", width="480">
       <figcaption>FT Log Magnitude</figcaption>
     </figure>
+    <figure>
+      <img src="./media/happy.jpg", width="480">
+      <figcaption>Example 2: Happy</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/angry.jpg", width="480">
+      <figcaption>Example 2: Angry</figcaption>
+    </figure>
 
     <figure>
-      <img src="./media/", width="480">
+      <img src="./media/happyangry.png", width="480">
       <figcaption>Example 2: Faces</figcaption>
     </figure>
 
     <figure>
-      <img src="./media/", width="480">
-      <figcaption>Example 3: Buildings</figcaption>
+      <img src="./media/dog.jpg", width="480">
+      <figcaption>Example 3: Dog</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./media/cat.jpg", width="480">
+      <figcaption>Example 3:Cat</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./media/dogcat_hybrid.png", width="480">
+      <figcaption>Example 3: Dog and Cat</figcaption>
     </figure>
 
 
@@ -205,16 +225,12 @@ information is lost. The result on the apple and orange looks almost exactly lik
     </figure>
     <p>And a few examples of my own using different masks:</p>
     <figure>
-      <img src="./media/", width="480">
-      <figcaption>The Orapple</figcaption>
+      <img src="./media/handeye.png", width="480">
+      <figcaption>Couldn't get proportions right, but terrifying nonetheless</figcaption>
     </figure>
     <figure>
-      <img src="./media/", width="480">
-      <figcaption>The Orapple</figcaption>
-    </figure>
-    <figure>
-      <img src="./media/", width="480">
-      <figcaption>The Orapple</figcaption>
+      <img src="./media/urbrural.png", width="480">
+      <figcaption>Kinda like how this one turned out, but a bit blurry</figcaption>
     </figure>
     
 </body>

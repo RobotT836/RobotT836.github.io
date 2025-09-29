@@ -334,46 +334,46 @@ if __name__ == '__main__':
         return gstack, lstack
     
     
-    im1name = 'apple.jpeg'
-    im1 = cv2.imread(im1name, cv2.IMREAD_COLOR)
-    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
-    im1 = sk.img_as_float(im1)
+    # im1name = 'apple.jpeg'
+    # im1 = cv2.imread(im1name, cv2.IMREAD_COLOR)
+    # im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
+    # im1 = sk.img_as_float(im1)
 
-    im2name = 'orange.jpeg'
-    im2 = cv2.imread(im2name, cv2.IMREAD_COLOR)
-    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
-    im2 = sk.img_as_float(im2)
+    # im2name = 'orange.jpeg'
+    # im2 = cv2.imread(im2name, cv2.IMREAD_COLOR)
+    # im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+    # im2 = sk.img_as_float(im2)
 
-    print("Gaussian and Laplacian stacks...")
+    # print("Gaussian and Laplacian stacks...")
 
-    im1 = np.clip(im1, 0, 1)
-    im2 = np.clip(im2, 0, 1)
+    # im1 = np.clip(im1, 0, 1)
+    # im2 = np.clip(im2, 0, 1)
 
-    levels = 5
-    agstack, alstack = stack(im1, levels=levels, ret='both')
-    ogstack, olstack = stack(im2, levels=levels, ret='both')
+    # levels = 5
+    # agstack, alstack = stack(im1, levels=levels, ret='both')
+    # ogstack, olstack = stack(im2, levels=levels, ret='both')
 
-    fig, ax = plt.subplots(2, levels, figsize=(20,8))
+    # fig, ax = plt.subplots(2, levels, figsize=(20,8))
     
-    for i in range(levels):
-        ax[0, i].imshow(agstack[i])
-        ax[0,i].set_title(f'Gaussian Level {i}')
-        ax[1,i].imshow(alstack[i])
-        ax[1,i].set_title(f'Laplacian Level {i}')
+    # for i in range(levels):
+    #     ax[0, i].imshow(agstack[i])
+    #     ax[0,i].set_title(f'Gaussian Level {i}')
+    #     ax[1,i].imshow(alstack[i])
+    #     ax[1,i].set_title(f'Laplacian Level {i}')
 
-    plt.tight_layout()
-    plt.show()
+    # plt.tight_layout()
+    # plt.show()
 
-    fig, ax = plt.subplots(2, levels, figsize=(20,8))
+    # fig, ax = plt.subplots(2, levels, figsize=(20,8))
     
-    for i in range(levels):
-        ax[0, i].imshow(ogstack[i])
-        ax[0,i].set_title(f'Gaussian Level {i}')
-        ax[1,i].imshow(olstack[i])
-        ax[1,i].set_title(f'Laplacian Level {i}')
+    # for i in range(levels):
+    #     ax[0, i].imshow(ogstack[i])
+    #     ax[0,i].set_title(f'Gaussian Level {i}')
+    #     ax[1,i].imshow(olstack[i])
+    #     ax[1,i].set_title(f'Laplacian Level {i}')
 
-    plt.tight_layout()
-    plt.show()
+    # plt.tight_layout()
+    # plt.show()
 
 
     print("\nPart 2.4: Multiresolution Blending")
@@ -406,10 +406,11 @@ if __name__ == '__main__':
             mask[:int(im.shape[0]*0.5), :] = 1.0
         elif t == 3:
             #Ellipsoidal mask
-            k, h = (mask.shape[0]//2, mask.shape[1]//2)
-            a, b = 120, 80
-            x, y = np.ogrid[:mask.shape[0], :mask.shape[1]]
-            ellipse = ((x - h)**2 / a**2) + ((y - k**2) / b**2) <= 1.0
+            h, w = mask.shape
+            centery, centerx = h//2, w//2
+            a, b = min(h, w)//3, min(h, w)//4
+            x, y = np.ogrid[:h, :w]
+            ellipse = ((y - centery)**2 / a**2) + ((x - centerx)**2 / b**2) <= 1.0
             mask[ellipse] = 1.0
         elif t == 4:
             #Vert Striped mask
@@ -452,5 +453,71 @@ if __name__ == '__main__':
 
     print('Example 2: Horror Hand')
 
+    # im1name = 'eyesource.png'
+    # im1 = cv2.imread(im1name, cv2.IMREAD_COLOR)
+    # im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
+    # im1 = sk.img_as_float(im1)
+
+    # im2name = 'hand.jpg'
+    # im2 = cv2.imread(im2name, cv2.IMREAD_COLOR)
+    # im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+    # im2 = sk.img_as_float(im2)
+
+    # h, w = 300, 300
+    # im1 = cv2.resize(im1, (w, h))
+    # im2 = cv2.resize(im2, (w, h))
+
+    # vmask = mask(3, im1)
+    # # plt.imshow(vmask, cmap='gray')
+    # # plt.show()
+    # orapple = multiresblend(im1, im2, vmask, levels=5)
+    # fig, ax = plt.subplots(1, 4, figsize=(16,4))
+    # ax[0].imshow(im1)
+    # ax[0].set_title('IM1')
+    # ax[1].imshow(im2)
+    # ax[1].set_title('IM2')
+    # ax[2].imshow(vmask, cmap='gray')
+    # ax[2].set_title('Mask')
+    # ax[3].imshow(orapple)
+    # ax[3].set_title('Final Image')
+    # for a in ax:
+    #     a.axis('off')
+
+    # plt.tight_layout()
+    # plt.show()
+
     
     print('Example 3: Stripes')
+
+    im1name = 'urban.jpg'
+    im1 = cv2.imread(im1name, cv2.IMREAD_COLOR)
+    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
+    im1 = sk.img_as_float(im1)
+
+    im2name = 'rural.jpg'
+    im2 = cv2.imread(im2name, cv2.IMREAD_COLOR)
+    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+    im2 = sk.img_as_float(im2)
+
+    #im2 = np.zeros_like(im1).astype(np.float64)
+
+    h, w = 300, 300
+    im1 = cv2.resize(im1, (w, h))
+    im2 = cv2.resize(im2, (w, h))
+
+    vmask = mask(4, im1)
+    orapple = multiresblend(im1, im2, vmask, levels=5)
+    fig, ax = plt.subplots(1, 4, figsize=(16,4))
+    ax[0].imshow(im1)
+    ax[0].set_title('IM1')
+    ax[1].imshow(im2)
+    ax[1].set_title('IM2')
+    ax[2].imshow(vmask, cmap='gray')
+    ax[2].set_title('Mask')
+    ax[3].imshow(orapple)
+    ax[3].set_title('Final Image')
+    for a in ax:
+        a.axis('off')
+
+    plt.tight_layout()
+    plt.show()
