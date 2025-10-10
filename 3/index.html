@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Project 3</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <style>
+      body {
+        background-color: rgb(163, 168, 173); 
+      }
+    </style>
+
+    <h1>Project 3A: Image Warping and Mosaicing</h1>
+    <h2></h2>
+    <div></div>
+    <h3>Part A.1</h3>
+    <p>
+        I chose scenes and landscape with relitively moderate amounts of detail that was far enough away from the center of projection.
+        I found that having more detailed objects and having more objects closer to the camera made for bad sample photographs
+        as, because of the limited amount of correspondences and the fact that they have to be chosen by hand, it's hard to accoutn for every
+        detail which results in ghosting. All photos were taken with a wide angle lens th minimize barrel distortions and better capture the scene:
+    </p>
+    
+    <figure>
+      <img src="./media/M11.png" width="360">
+      <figcaption>Mosaic Image 1.1</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/M12.png" width="360">
+      <figcaption>Mosaic Image 1.2</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/M21.png" width="360">
+      <figcaption>Mosaic Image 2.1</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/M22.png" width="360">
+      <figcaption>Mosaic Image 2.2</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/M31.png" width="360">
+      <figcaption>Mosaic Image 3.1</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/M32.png" width="360">
+      <figcaption>Mosaic Image 3.2</figcaption>
+    </figure>
+    <br>
+
+
+    <h3>Part A.2</h3>
+    <p>
+        Computing the homography between the two images was just a matter of rearranging. We are given correspondences (p, the points in the image
+        to be transformed and p', the points of the reference/base image) and the homography matrix H as p' = H * p. We want to rearrange this into the 
+        form Ax = b so that we can solve for the parameters of the homography matrix using least squares. In this case, our x would be h, the 1D flattened 
+        homography matrix with the last value (scaling factor) set to 1. This gives us the following system of equations (and the following derivation for A and b):
+    </p>
+    <figure>
+      <img src="./media/deriv.png", width="360">
+      <figcaption>Derivation of the System</figcaption>
+    </figure>
+
+    <p>Also below are hand picked correspondences for each image pair</p>
+    <figure>
+      <img src="./media/correspondences_1.png", width="360">
+      <figcaption>Pair 1</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/correspondences_2.png", width="360">
+      <figcaption>Pair 2</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/correspondences_3.png", width="360">
+      <figcaption>Pair 3</figcaption>
+    </figure>
+
+    <h3>Part A.3</h3>
+    <p>
+      To warp images, I performed both nearest neighbors and bilinear interpolation. Previous naive versions were exceptionally slow (anywhere from 1-2 minutes
+      for nearest neighbors and up to 5 minutes for bilinear), so I decided to optimize both using numpy techniques. Overall though, bilinear takes longer than 
+      nearest neighbors due to its complexity (sampling 4 neighbors and averaging instead of snapping the value to one neighbor). I did note that bilinear
+      interpolation seemef to decrease the size of the final rectified image, possibly due to a larger number of pixels being sampled. Here are the example images
+      and their rectified versions:
+    </p>
+    <figure>
+      <img src="./media/cornerpts_r1.png", width="360">
+      <figcaption>Original Image 1</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/rectified_r1.png", width="360">
+      <figcaption>Rectified Image 1</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/cornerpts_r2.png", width="360">
+      <figcaption>Original Image 2</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/rectified_r2.png", width="360">
+      <figcaption>Rectified Image 2</figcaption>
+    </figure>
+
+    <h3>Part A.4</h3>
+    <p>Finally, to blend the images into a mosaic, I decided to perform blending using a Laplacian Stack. As mentioned before, I had trouble with details in the 
+        images causing ghosting, so I experimented with Laplacian stacks to see if that would help. As the fault was with the images, I decided to keep the
+        stack implementation.
+
+        To stitch together the final mosaic, I first had to determine the final bounds of the mosaic. This was done by warping the corners of the first image using the 
+        computed homography matrix, then using those as upper/lower bounds for the final image. Next was to create the image masks to be used by the stack blending 
+        implementation to get rid of artifacts, and initialize the final osaic with the second/reference image. I then used bilinear interpolation on image 1 and its mask
+        to warp it into image 2's frame. 
+
+        After warping image 1, I calcualted the area of the overlap between the two images. If there was any overlap at all, I had to change the mask to only include
+        overlapped areas. I used the python version of the / operator from Matab that was mentioned in lecture to compute the boundary distance between images 1 and 2, 
+        then applied the resulting value to the mask (after smoothing, to reduce harsh edges along the boundary in the final mosaic).
+
+        After all this, it's finally time to blend. I call my stack implementation, which is an almost exact copy of my version from Project 2. It calculates a 
+        gaussian and laplacian stack and applies smoothing over the boundary surface defined by the mask. The result is a smooth mosaic with very little visible artifacts and 
+        harsh borders. Source images are shown above in A.1:
+    </p>
+
+    <figure>
+      <img src="./media/mosaic1.png", width="480">
+      <figcaption>Pair 1 Mosaic</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/mosaic2.png", width="480">
+      <figcaption>Pair 2 Mosaic</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/mosaic3.png", width="480">
+      <figcaption>Pair 3 Mosaic</figcaption>
+    </figure>
+    
+</body>
