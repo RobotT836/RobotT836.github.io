@@ -140,5 +140,105 @@
       <img src="./media/mosaic3.png", width="600">
       <figcaption>Pair 3 Mosaic</figcaption>
     </figure>
-    
+
+
+    <h1>Project 3B: Feature Matching for Autostitching</h1>
+
+    <h3>Part B.1</h3>
+    <p>
+      For Harris corner detection, I used the sample code provided by the project spec, as 
+      implementing Harris corners from scratch is not trivial. I then tweaked the parameters until
+      I had a nice amount of points to perform ANMS on.
+
+      Following the ideas of the paper, I performed ANMS by using the distance squared metric of the 
+      points as a corner strength score. I defined a mask for the radius and performed the minimization 
+      outlined in the paper to only take into account local maxima. The result leads to a much cleaner 
+      number and spread of Harris corners.
+    </p>
+
+    <figure>
+      <img src="./media/B_orig11.png", width="600">
+      <figcaption>Original Picture</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/B_harris11.png", width="600">
+      <figcaption>Harris corners, max of 5000 peaks</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/B_anms11.png", width="600">
+      <figcaption>ANMS applied, max corners = 500</figcaption>
+    </figure>
+
+    <h3>Part B.2</h3>
+    <p>
+      To calculate feature descriptors, I turned to the paper again and implemented MOPS.
+      First, I defined a 40x40 window over each corner and convolved with the gaussian to 
+      blur (since we have to sample pixels at a lower frequency according to the paper i.e. 
+      convolve with the gaussian to blur). I then simply downsized the the 8x8 sample size and 
+      normalized to obtain the feature vector at that corner.
+    </p>
+
+    <figure>
+      <img src="./media/B_features11.png", width="600">
+      <figcaption>Extracted Features from Image 1</figcaption>
+    </figure>
+
+    <h3>Part B.3</h3>
+    <p>
+      Next, I implemented feature matching using Lowe's technique, or the ratio test. 
+      We can do this by comparing the ratio of the errors of the first and second
+      nearest neighbors to a point. If the ratio is below out threshold, we have a possible
+      correspondence. To get a good number of correspondences gained/left over for RANSAC,
+      I had to set the threshold quite high, but RANSAC should take care of the outliers that
+      result from this.
+    </p>
+
+    <figure>
+      <img src="./media/B_corrs1.png", width="600">
+      <figcaption>Extracted Correspondences for Image Pair 1</figcaption>
+    </figure>
+
+
+    <h3>Part B.4</h3>
+    <p>
+      Finally, we perform RANSAC to estimate the homographies between the two images. First, I define a helper
+      function to return Hp. Next, I take a random sample of the correspondences and use those to compute a rough
+      estimate of H. Then, using the helper function we solve the equation p' = Hp for p'. We can compare the output of
+      this equation to our actual points in the second image to compute an error (distance) and determine which of the 
+      sample points have a low enough error to be considered inliers. Then, we iterate and keep the largest set of possible 
+      inliers each iteration.
+
+      Once that's done and we have a set of possible inliers, we use those to recompute a best estimate for H.
+
+      After this is done, I use my functions from Part A as normal, this time using the computed estimate of H to obtain the 
+      following:
+    </p>
+
+    <figure>
+      <img src="./media/B_automosaic1.png", width="600">
+      <figcaption>Autostitched</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/mosaic1.png", width="600">
+      <figcaption>Manual</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./media/B_automosaic2.png", width="600">
+      <figcaption>Autostitched</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/mosaic2.png", width="600">
+      <figcaption>Manual</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./media/B_automosaic3.png", width="600">
+      <figcaption>Autostitched</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/mosaic3.png", width="600">
+      <figcaption>Manual</figcaption>
+    </figure>
+
 </body>
