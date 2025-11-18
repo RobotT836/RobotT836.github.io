@@ -43,22 +43,50 @@
 
     <h3>Part 1</h3>
     <p>
-     For the model, I used the MLP as suggested in the instructions illustrated below, with hyperparameters epochs = 2000, lr = . 
+     For the model, I used the MLP as suggested in the instructions illustrated below, with hyperparameters: 
+     L = 10 #Numbers: 10 (default), 100, 1
+     width = 256 #Numbers: 256 (default), 64, 512
+     
+     Below is a full breakdown of the MLP I used, from the instructions:
     </p>
     <figure>
       <img src="./media/1dmodel.png", width="480">
       <figcaption>MLP for Part 1</figcaption>
     </figure>
 
-    <p>Also below are hand picked correspondences for each image pair</p>
+    <p>Below are my results from part 1.</p>
     <figure>
-      <img src="./media/correspondences_1.png", width="960">
-      <figcaption>Pair 1</figcaption>
+      <img src="./media/part1progression.png", width="960">
+      <figcaption>Fox image, standard hyperparameters (L = 10, width = 256)</figcaption>
     </figure>
 
     <figure>
-      <img src="./media/part1psnr.png", width="960">
-      <figcaption>Pair 3</figcaption>
+      <img src="./media/foxprogression2.png", width="960">
+      <figcaption>Fox image, hyperparameter set 1 (L = 100, width = 64)</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./media/foxprogression3.png", width="960">
+      <figcaption>Fox image, hyperparameter set 2 (L = 1, width = 512)</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./media/oskiprogression.png", width="960">
+      <figcaption>Custom image, default hyperparameter set (L = 10, width = 256)</figcaption>
+    </figure>
+
+
+    <figure>
+      <img src="./media/psnrfox1.png", width="960">
+      <figcaption>PSNR Graph (L = 10, width = 256)</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/psnrfox2.png", width="960">
+      <figcaption>PSNR Graph (L = 100, width = 64)</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/psnrfox3.png", width="960">
+      <figcaption>PSNR Graph (L = 1, width = 512)</figcaption>
     </figure>
 
 
