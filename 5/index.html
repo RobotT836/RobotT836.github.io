@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Project 4</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <style>
+      body {
+        background-color: rgb(163, 168, 173); 
+      }
+    </style>
+    <a href="https://robott836.github.io/">Home</a>
+
+    <h1>Project 5: Diffusion Models</h1>
+    <h2></h2>
+    <div></div>
+    <h3>Part 0</h3>
+    <p>
+        Messing with the DeepFloyd model I was able to come up with some interesting images using my prompts I came up with. Some are cool, some prompts I made up
+        just to mess with the model.
+
+        Prompts:
+        ['a high quality picture',
+        'an oil painting of a snowy mountain village',
+        'a photo of the amalfi coast',
+        'a photo of a man',
+        'a photo of a hipster barista',
+        'a photo of a dog',
+        'a picture of a cat',
+        'an oil painting of people around a campfire',
+        'an oil painting of an old man',
+        'a lithograph of waterfalls',
+        'a lithograph of a skull',
+        'a man wearing a hat',
+        'a high quality photo',
+        'a rocket ship',
+        'a pencil',
+        'a drawing of a house',
+        'a blank white canvas',
+        'a half full glass of red wine',
+        'an oil painting of San Francisco',
+        'a photograph of a bear',
+        'an aerial picture of Berkeley, CA',
+        '']
+
+        And the seed: 180
+    </p>
+    
+    <figure>
+      <img src="./media/step0output.png" width="480">
+      <figcaption>Output using some prompts from the list, num_inference_steps = 20</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1_output50.png" width="480">
+      <figcaption>Same prompts, but num_inference_steps = 50</figcaption>
+    </figure>
+    <br>
+
+
+    <h3>Part 1</h3>
+    <p>For all parts, I use the following test image provided for the project of the Campanile, unless otherwise stated. </p>
+    <figure>
+        <img src="./media/campanile.jpg">
+        <figcaption>Original Image - Note the code resizes this to 64x64 for speed</figcaption>
+    </figure>
+    <p>
+        1.1: First, I added noise to the Campanile test image with timesteps (250, 500, 750) using the forard process outlined in lecture:
+    </p>
+    <figure>
+      <img src="./media/P1_noise.png", width="360">
+      <figcaption>Noisy Campanile t = [250, 500, 750]</figcaption>
+    </figure>
+
+    <p>1.2: Then attempted denoising by blurring with the Gaussian:</p>
+    <figure>
+      <img src="./media/P1_gaussian.png", width="360">
+      <figcaption>Images above, Gaussian applied</figcaption>
+    </figure>
+
+    <p>1.3: I then tried One-step denoising using the UNet model. While much better, at higher noise levels it tended to warp the original image:</p>
+
+    <figure>
+      <img src="./media/P1_Onestep.png", width="360">
+      <figcaption>Fox image, hyperparameter set 1 (L = 100, width = 64)</figcaption>
+    </figure>
+
+    <p>1.4: I then tried Iterative denoising, which applies one-step denoising a bunch of times but skips steps (strided timesteps) for speed.
+        Here are the results, and comparison to one-step denoising and gaussian blurring. Note the iterative denoising has a bit of 
+        noise still in it (not sure why), but the overall image is much clearer than the one-step version and stays more faithful to the \
+        original image.
+    </p>
+
+    <figure>
+      <img src="./media/P1_iterativevs.png", width="360">
+      <figcaption>Fox image, hyperparameter set 2 (L = 1, width = 512)</figcaption>
+    </figure>
+
+
+    <p>1.5: Next, five samples using no test image, just pictures generated from pure noise using iterative denoising</p>
+    <figure>
+      <img src="./media/P1_sample1.png", width="360">
+    </figure>
+        <figure>
+      <img src="./media/P1_sample2.png", width="360">
+    </figure>
+        <figure>
+      <img src="./media/P1_sample3.png", width="360">
+    </figure>
+        <figure>
+      <img src="./media/P1_sample4.png", width="360">
+    </figure>
+        <figure>
+      <img src="./media/P1_sample5.png", width="360">
+    </figure>
+
+    <p>1.6: Then the same thing, but using Classifier Free Guidance with a scale of 7 instead, where we can condition on the model. Note these images are much clearer.</p>
+
+    <figure>
+      <img src="./media/P1_cfg.png", width="480">
+      <figcaption>NeRF model (Taken from P4 Instructions)</figcaption>
+    </figure>
+    
+
+
+    <p>Using the SDEdit Algorithm, we can "edit" pictures by forcing noise back towards a natural image, in this case the test images.
+        In addition to the Campanile test image, which I'll refer to as image 1, I have the following two test images, labelled 2 and 3 respectively:
+    </p>
+        <figure>
+      <img src="./media/orple.jpg", width="360">
+    </figure>
+            <figure>
+      <img src="./media/landscape.jpg", width="360">
+    </figure>
+    <p>Note, like image 1, these are resized to 64x64 for speed as well, so quality varies (especially since image 3 is a landscape picture with much higher resolution.)
+        For part 1.7, I applied the SDEdit Algorithm.
+    </p>
+    <figure>
+      <img src="./media/P1_im2im1.png", width="480">
+    </figure>
+    <figure>
+      <img src="./media/P1_im2im2.png", width="480">
+    </figure>
+    <figure>
+      <img src="./media/P1_im2im3.png", width="480">
+    </figure>
+
+
+    <p>
+        1.7.1: The procedure also works on random web images and hand drawn images. We can force noise back to the natural image manifold by "guiding" the model
+        towards 
+    </p>
+
+    <figure>
+      <img src="./media/P1_webim.png", width="480">
+      <figcaption>Sample Web image</figcaption>
+    </figure>
+        <figure>
+      <img src="./media/P1_webimoutput.png", width="480">
+      <figcaption>Result</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1_handdrawn1.png", width="480">
+      <figcaption>Hand Drawn Image 1</figcaption>
+    </figure>
+        <figure>
+      <img src="./media/P1_handdrawnoutput.png", width="480">
+      <figcaption>Result</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1_handdrawn2.png", width="480">
+      <figcaption>Hand Drawn Image 2</figcaption>
+    </figure>
+        <figure>
+      <img src="./media/P1_handdrawnoutput2.png", width="480">
+      <figcaption>Result</figcaption>
+    </figure>
+
+
+    <p>1.7.2: I then applied inpainting to the original test images. We can essentially use inpainting to designate an area to generate a new image by
+        using a mask. Everything outside of the mask stays the same, while the model acts on the area inside the mask.
+    </p>
+    <figure>
+      <img src="./media/P1_inpantingmasks.png", width="480">
+      <figcaption>Masks Used, using im 1 as a sample</figcaption>
+    </figure>
+        <figure>
+      <img src="./media/P1_inpaintingim1.png", width="480">
+      <figcaption>Image 1, Mask 1 result</figcaption>
+    </figure>
+        <figure>
+      <img src="./media/P1_inpaintingim2mask2.png", width="480">
+      <figcaption>Image 2, Mask 2 result</figcaption>
+    </figure>
+        <figure>
+      <img src="./media/P1_inpaintingim3mask3.png", width="480">
+      <figcaption>Image 3, Mask 3 result</figcaption>
+    </figure>
+
+    <p>1.7.3: Now, I do the same thing as SDEdit, but now attempt to guide the model using a text prompt. Unfortunately with my custom prompts the model didn't really
+        work well, so here's one of the failed attempts. You can see the model try to fit the generated image, then fail as noise gets higher.
+    </p>
+
+        <figure>
+      <img src="./media/P1_textcondoutput.png", width="480">
+    </figure>
+
+    <p>For part 1.8, I applied the algorithm outlined in the instructions by modifying my CFG function and changing how I calculate epsilon.
+        Now, we can generate visual anagrams. Here's a few sample, plus the used prompts:
+    </p>
+    <figure>
+      <img src="./media/P1_visualanagram1.png", width="480">
+      <figcaption>'an oil painting of a snowy mountain village' and 'a photo of a man'</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1_visualanagram2.png", width="480">
+      <figcaption>'an oil painting of San Francisco' and 'a photo of a hipster barista'</figcaption>
+    </figure>
+
+
+    <p>For part 1.9, we can recreate hybrid images by taking the low frequencies of one prompt and the high frequencies of another prompt.
+        Here are a couple samples plus prompts:
+    </p>
+    <figure>
+      <img src="./media/P1_hybrid1.png", width="480">
+      <figcaption>'a photo of a dog' and 'a picture of a cat'</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P1_visualanagram2.png", width="480">
+      <figcaption>'a photo of the amalfi coast' and 'a drawing of a house'</figcaption>
+    </figure>
+
+
+
+
+</body>
