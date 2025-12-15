@@ -238,6 +238,97 @@
     </figure>
 
 
+    <br>
+
+    <h3>Part 2</h3>
+
+    <p>1.2: Using the outlined formula in the instructions, I generated noisy samples of a number from the 
+      MNIST dataset using various sigma values: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+    </p>
+        <figure>
+      <img src="./media/P2/P2_sigmas.png", width="480">
+    </figure>
+
+    <p>1.2.2: For the actual UNet Denoiser, I used the following hyperparameters. Model structure is as outlined in the instruction documents.
+      SEED = 180,
+
+      batch_size = 256,
+      learning_rate = 1e-4,
+      noise_level = 0.5,
+      hidden_dim = 128,
+      num_epochs = 5.  
+
+      Additionally, the loss curve over the training data and a sample from the dataset performed on the frist and last epoch:
+
+    </p>
+    <figure>
+      <img src="./media/P2/P2_unetfulllosscurve.png", width="480">
+    </figure>
+    <figure>
+      <img src="./media/P2/P2_unetsamples.png", width="480">
+    </figure>
+
+    <p>1.2.2: Testing with out-of-distribution noise levels: [0.0, 0.2, 0.4, 0.5 (trained), 0.6, 0.8, 1.0]</p>
+    <figure>
+      <img src="./media/P2/P2_unetvaryingsigmas.png", width="480">
+    </figure>
+
+
+    <p>1.2.3: I also tested the UNet with pure noise and got this result:</p>
+    <figure>
+      <img src="./media/P2/P2_unetgenloss.png", width="480">
+    </figure>
+    <figure>
+      <img src="./media/P2/P2_unetgensamples.png", width="480">
+    </figure>
+    <p>I noticed over multiple rounds that the output picture would vaguely look like an 8 or 0. I think, following the idea of centroids, that it has to do
+      with what the model is expected to do and the data it's been given. Given pure noise, the model tries to predict the safest number, and since the noise is 
+      uniform everywhere it would make sense to predict a number or shape that's as spread out as possible. In the case of MNIST, those numbers would likely be
+      0 or 8, which is why the output shape looks like a roundish blob or an 8.
+    </p>
+
+
+    <p>2.2-2.3: For the Time Conditioned UNet, I used standard hyperparameters from the instructions: <br>
+      batch_size = 64<br>
+      learning_rate = 1e-2<br>
+      hidden_dim = 64
+      num_epochs = 10
+      (same seed used thru whole program). 
+
+      And got these results:
+    </p>
+    <figure>
+      <img src="./media/P2/P2_tcunetloss.png", width="480">
+    </figure>
+    <figure>
+      <img src="./media/P2/P2_tcunetsamples.png", width="480">
+    </figure>
+
+    <p>I then tried class conditioning with the time condition UNet, instead trying to optimize to remove the 
+      learning rate scheduler. I found that simply increasing the number of epochs was enough to surpass what the learning
+      rate scheduler was able to acheive. IN my case I doubled the number of epochs from 10 to 20, but also found that further increasing 
+      the number of epochs led to a bit less minimum loss. Here are my hyperparameters:<br>
+
+      batch_size = 64 <br>
+      learning_rate = 1e-2<br>
+      hidden_dim = 64  <br>
+      num_epochs = 20<br>
+    </p>
+    <figure>
+      <img src="./media/P2/P2_lossscheduler.png", width="480">
+      <figcaption>With the scheduler, epochs=10</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P2/P2_lossnoscheduler.png", width="480">
+      <figcaption>No scheduler, epochs=20</figcaption>
+    </figure>
+    <figure>
+      <img src="./media/P2/P2_ccunetsamples.png", width="480">
+      <figcaption>Samples from each class</figcaption>
+    </figure>
+
+
+
 
 
 </body>
